@@ -1,4 +1,5 @@
 require_relative 'my_enumerable'
+
 class MyList
   def initialize(*list)
     @list = list
@@ -6,9 +7,12 @@ class MyList
 
   attr_reader :list
 
-  def each
-    yield @list
+  def each(&block)
+    return to_enum(:each) unless block_given?
+
+    @list.each(&block)
   end
+
   include MyEnumerable
 end
 
@@ -25,4 +29,7 @@ my_list_obj.any? { |e| e == 2 } # => true
 my_list_obj.any? { |e| e == 5 } # => false
 
 # Test #filter method
-my_list_obj.filter(&:even?) # => [2,4]
+my_list_obj.filter(&:even?) # => [2, 4]
+
+# Test #each method
+my_list_obj.each { |e| puts "#{e}: check" }
